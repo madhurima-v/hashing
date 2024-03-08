@@ -16,6 +16,7 @@ app.use(bodyParser.urlencoded({ extended: true }))
 
 
 var users = [];
+var hashing = {};
 
 app.get('/', function(req,res){
     res.render('index.ejs', {
@@ -29,19 +30,27 @@ app.get('/register', function(req,res){
 
 
 app.post('/', function(req,res){
-    var password = req.body.name;
-    var hash = '3a185445e2fc3431991c74a63ecd6f78'
 
-    if (md5(password)==hash){
-        res.render('index.ejs',{
-            'name': 'successful login'
-        })
+    var name = req.body.name;
+    var validuser = 0;
+
+    for (let i=0; i<count; i++){
+
+        if (name==users[i]['userid']) {
+            validuser=1
+        }
+    } 
+    
+    if(validuser==0){
+        console.log('no users')
     }
     else{
-        res.render('index.ejs',{
-            'name': 'unsuccessful login'
-        })
+        console.log('user exist')
     }
+
+   res.render('index.ejs',{
+    'name': 'testing'
+   })
    
 })
 
@@ -51,14 +60,18 @@ app.post('/register', function(req,res){
 
     count++
 
-   users.push(req.body)
+    var name = req.body.name
+    var userid = req.body.userid
+    var hash = md5(req.body.password)
+
+    hashing ['name'] = name
+    hashing ['userid'] = userid
+    hashing ['hash'] = hash
+
+
+    users.push(structuredClone(hashing))
 
     res.render('register.ejs')
-
-    for (let i=0; i<count; i++){
-        console.log(users[i]['password'])
-    }
-    
 })
 
 
